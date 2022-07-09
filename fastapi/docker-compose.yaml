@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  fastapi:
+    image: fastapi:latest
+    build: ./
+    ports:
+      - "8001:8001"
+    restart: always
+networks:
+  default:
+    name: net1
+    external: true
