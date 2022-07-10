@@ -1,21 +1,19 @@
 version: "3.9"
 services:
-  mariadb:
-    image: mariadb:10.8
-    environment:
-      - MARIADB_ROOT_PASSWORD=test
+  redis:
+    image: redis:7-alpine
     restart: always
     # ports:
     #   - "3306:3306"
-    volumes:
-      - mariadb_data:/var/lib/mysql
+    volumes: 
+      - redis_volume:/data
     deploy:
         mode: replicated
         replicas: 1
         endpoint_mode: vip
 
 volumes:
-  mariadb_volume:
+  redis_volume:
     external: true
 
 networks:
