@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  flask:
+    image: flask:latest
+    build: ./
+    # ports:
+    #   - "5001:5001"
+    restart: always
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
+
+networks:
+  default:
+    name: net1
+    external: true

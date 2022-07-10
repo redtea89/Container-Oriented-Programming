@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  redis:
+    image: redis:7-alpine
+    restart: always
+    # ports:
+    #   - "3306:3306"
+    volumes: 
+      - redis_volume:/data
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
+
+volumes:
+  redis_volume:
+    external: true
+
+networks:
+  default:
+    name: net1
+    external: true

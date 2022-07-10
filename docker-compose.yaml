@@ -1,0 +1,128 @@
+version: "3.9"
+services:
+  mariadb:
+    image: mariadb:10.8
+    environment:
+      - MARIADB_ROOT_PASSWORD=test
+    restart: always
+    # ports:
+    #   - "3306:3306"
+    volumes:
+      - mariadb_volume:/var/lib/mysql
+    deploy:
+        mode: replicated
+        replicas: 2
+        endpoint_mode: vip
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    # ports:
+    #   - "6379:6379"
+    volumes: 
+      - redis_volume:/data
+    deploy:
+        mode: replicated
+        replicas: 2
+        endpoint_mode: vip
+
+  flask:
+    image: flask
+    build: ./flask/
+    # ports:
+    #   - "5001:5001"
+    deploy:
+        mode: replicated
+        replicas: 2
+        endpoint_mode: vip
+    restart: always
+    depends_on:
+      - mariadb
+
+  fastapi:
+    image: fastapi
+    build: ./fastapi/
+    # ports:
+    #   - "8001:8001"
+    deploy:
+        mode: replicated
+        replicas: 2
+        endpoint_mode: vip
+    restart: always
+    depends_on:
+      - mariadb
+
+  django:
+    image: django:latest
+    build: ./django/
+    # ports:
+    #   - "8000:8000"
+    deploy:
+        mode: replicated
+        replicas: 2
+        endpoint_mode: vip
+    restart: always
+    env_file:
+      - ./django/secret/django.env
+    depends_on:
+      - mariadb
+
+  express:
+    image: express
+    build: ./express/
+    # ports:
+    #   - "3001:3001"
+    restart: always
+    depends_on:
+      - mariadb
+
+  nginx:
+    image: nginx:1.23.0-alpine
+    # ports:
+    #   - "81:81"
+    deploy:
+        mode: replicated
+        replicas: 2
+        endpoint_mode: vip
+    volumes:
+      - ./nginx/config/default.conf:/etc/nginx/conf.d/default.conf
+    restart: always
+    depends_on:
+      - flask
+      - fastapi
+      - mariadb
+
+  loadbalancer:
+    image: nginx:1.23.0-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./loadbalancer/config/default.conf:/etc/nginx/conf.d/default.conf
+    restart: always
+    depends_on:
+      - flask
+      - fastapi
+      - nginx
+      - mariadb
+
+volumes:
+  mariadb_volume:
+    external: true
+  mysql_volume:
+    external: true
+  postgres_volume:
+    external: true
+  mongo_volume:
+    external: true
+  redis_volume:
+    external: true
+  rabbitmq_volume:
+    external: true
+  elasticsearch_volume:
+    external: true
+  
+
+networks:
+  default:
+    name: net1
+    external: true
