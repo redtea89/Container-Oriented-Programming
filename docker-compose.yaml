@@ -1,38 +1,75 @@
 version: "3.9"
 services:
+  mariadb:
+    image: mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=test
+    restart: always
+    # ports:
+    #   - "3306:3306"
+    volumes:
+      - mariadb_volume:/var/lib/mysql
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
+
   flask:
     image: flask
     build: ./flask/
     # ports:
     #   - "5001:5001"
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
     restart: always
+    depends_on:
+      - mariadb
 
   fastapi:
     image: fastapi
     build: ./fastapi/
     # ports:
     #   - "8001:8001"
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
     restart: always
+    depends_on:
+      - mariadb
 
   django:
     image: django:latest
     build: ./django/
     # ports:
     #   - "8000:8000"
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
     restart: always
     env_file:
       - ./django/secret/django.env
+    depends_on:
+      - mariadb
 
   nginx:
     image: nginx
     # ports:
     #   - "81:81"
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
     volumes:
       - ./nginx/config/default.conf:/etc/nginx/conf.d/default.conf
     restart: always
     depends_on:
       - flask
       - fastapi
+      - mariadb
 
   loadbalancer:
     image: nginx
@@ -45,6 +82,24 @@ services:
       - flask
       - fastapi
       - nginx
+      - mariadb
+
+volumes:
+  mariadb_volume:
+    external: true
+  mysql_volume:
+    external: true
+  postgres_volume:
+    external: true
+  mongo_volume:
+    external: true
+  redis_volume:
+    external: true
+  rabbitmq_volume:
+    external: true
+  elasticsearch_volume:
+    external: true
+  
 
 networks:
   default:

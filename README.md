@@ -6,29 +6,66 @@
 
 ## 아키텍쳐
 
-​	하나씩 그려나가보겠다. 가능한 많은 것을 연결시킬 것이기 때문에 로컬이든 클라우드든 이것저것 다 붙여볼 계획이다. 
+   하나씩 그려나가보겠다. 가능한 많은 것을 연결시킬 것이기 때문에 로컬이든 클라우드든 이것저것 다 붙여볼 계획이다. 
 
 
 
 ## 구성
 
-​	심심할 때마다 하나씩 하나씩 늘려간다. 그 시작은 언제나 그러했듯이 Nginx로 시작하겠다. 
+   심심할 때마다 하나씩 하나씩 늘려간다. 그 시작은 언제나 그러했듯이 Nginx로 시작하겠다. 
 
 
 
 ## Quick Start
 
-> 환경설정에 신경쓰지 않아도 되도록 세팅을 해보려 노력하겠다. 
+Docker network 추가
 
-- 개별 도커를 실행시킬 수 있는 코드를 유지하되 종속관계를 명시한다. 
-- Docker-compose를 실행시키면 한 번에 실행되도록 설정한다. 
-- k8s폴더 안에서 kubectl 명령어 한번에 모두 실행되도록 만든다. 
+```bash
+docker network create net1
+```
+
+
+
+Docker volume 추가
+
+```bash
+docker volume create mariadb_volume
+docker volume create mysql_volume
+docker volume create postgres_volume
+docker volume create mongo_volume
+docker volume create redis_volume 
+docker volume create rabbitmq_volume
+docker volume create elasticsearch_volume
+```
+
+
+
+실행
+
+```bash
+# 최초 1번, 그리고 docker image를 업데이트하고싶을 때 실행
+docker compose build
+
+# 실행
+docker compose up -d
+```
+
+
+
+옵션 - replica 추가
+
+```
+docker-compose.yaml 파일에서 replica의 숫자를 바꾸면 됨. (Loadbalancer 제외)
+```
+
+
+
+
+
+
 
 
 
 ## 기타
 
 - OS에 상관없이 도커나 kubectl을 실행시킬 수 있다면 어디서든 실행될 수 있도록 만든다. 
-
-
-
