@@ -25,7 +25,23 @@ services:
       - postgres_volume:/var/lib/postgresql/data
     deploy:
         mode: replicated
-        replicas: 1
+        replicas: 2
+        endpoint_mode: vip
+
+  mongo:
+    image: mongo:4-focal
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME = root
+      - MONGO_INITDB_ROOT_PASSWORD = test
+    restart: always
+    # ports:
+    #   - "8081:8081"
+    volumes:
+      - mongo_volume:/data/db
+      - mongo_volume:/data/configdb
+    deploy:
+        mode: replicated
+        replicas: 2
         endpoint_mode: vip
 
   redis:

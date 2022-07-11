@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:4-focal
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME = root
+      - MONGO_INITDB_ROOT_PASSWORD = test
+    restart: always
+    # ports:
+    #   - "8081:8081"
+    volumes:
+      - mongo_volume:/data/db
+      - mongo_volume:/data/configdb
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
+
+volumes:
+  mongo_volume:
+    external: true
+
+networks:
+  default:
+    name: net1
+    external: true
