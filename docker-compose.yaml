@@ -79,6 +79,18 @@ services:
     depends_on:
       - elasticsearch
 
+  ghost:
+    image: ghost:5-alpine
+    restart: always
+    ports:
+      - "2368:2368"
+    volumes:
+      - ghost_volume:/var/lib/ghost/content
+    # deploy:
+    #     mode: replicated
+    #     replicas: 1
+    #     endpoint_mode: vip
+
   flask:
     image: flask
     build: ./flask/
@@ -182,6 +194,8 @@ volumes:
   rabbitmq_volume:
     external: true
   elasticsearch_volume:
+    external: true
+  ghost_volume:
     external: true
 
 secrets:
