@@ -9,7 +9,7 @@ services:
       - mysecret
     deploy:
         mode: replicated
-        replicas: 2
+        replicas: 1
         endpoint_mode: vip
     # ports:
     #   - "3306:3306"
@@ -23,7 +23,7 @@ services:
       - mysecret
     deploy:
         mode: replicated
-        replicas: 2
+        replicas: 1
         endpoint_mode: vip
     # ports:
     #   - "5432:5432"
@@ -38,7 +38,7 @@ services:
       - mysecret
     deploy:
         mode: replicated
-        replicas: 2
+        replicas: 1
         endpoint_mode: vip
     # ports:
     #   - "8081:8081"
@@ -52,10 +52,32 @@ services:
       - mysecret
     deploy:
         mode: replicated
-        replicas: 2
+        replicas: 1
         endpoint_mode: vip
     # ports:
     #   - "6379:6379"
+
+  elasticsearch:
+    image: elasticsearch:8.3.2
+    environment:
+      - "xpack.security.enabled=false"
+      - "discovery.type=single-node"
+    restart: always
+    ports:
+      - "9200:9200"
+    #   - "9300:9300"
+    volumes:
+      - elasticsearch_volume:/usr/share/elasticsearch/data
+
+  kibana:
+    image: kibana:8.3.2
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
 
   flask:
     image: flask
@@ -64,7 +86,7 @@ services:
       - mysecret
     deploy:
         mode: replicated
-        replicas: 2
+        replicas: 1
         endpoint_mode: vip
     restart: always
     depends_on:
@@ -79,7 +101,7 @@ services:
       - mysecret
     deploy:
         mode: replicated
-        replicas: 2
+        replicas: 1
         endpoint_mode: vip
     restart: always
     depends_on:
@@ -92,7 +114,7 @@ services:
     build: ./django/
     deploy:
         mode: replicated
-        replicas: 2
+        replicas: 1
         endpoint_mode: vip
     restart: always
     secrets:
@@ -122,7 +144,7 @@ services:
       - mysecret
     deploy:
         mode: replicated
-        replicas: 2
+        replicas: 1
         endpoint_mode: vip
     depends_on:
       - flask
