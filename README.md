@@ -52,11 +52,21 @@ docker compose up -d
 
 
 
-옵션 - replica 추가
+옵션1 - replica 추가
 
 ```
 docker-compose.yaml 파일에서 replica의 숫자를 바꾸면 됨. (Loadbalancer 제외)
 ```
+
+
+
+옵션2 - secrets.txt에서 ID 비번들을 내맘대로
+
+```
+secrets.txt
+```
+
+
 
 
 
