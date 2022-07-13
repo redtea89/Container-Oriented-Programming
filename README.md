@@ -36,6 +36,7 @@ docker volume create mongo_volume
 docker volume create redis_volume 
 docker volume create rabbitmq_volume
 docker volume create elasticsearch_volume
+docker volume create ghost_volume
 ```
 
 

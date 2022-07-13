@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  mariadb:
+    image: mariadb:10.8
+    restart: always
+    # ports:
+    #   - "3306:3306"
+    volumes:
+      - mariadb_volume:/var/lib/mysql
+    secrets:
+      - mysecret
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
+
+volumes:
+  mariadb_volume:
+    external: true
+
+secrets:
+  mysecret:
+    file: ../../secrets.txt
+
+networks:
+  default:
+    name: net1
+    external: true
+

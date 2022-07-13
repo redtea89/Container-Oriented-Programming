@@ -93,7 +93,7 @@ services:
 
   flask:
     image: flask
-    build: ./flask/
+    build: ./apps/flask/
     secrets:
       - mysecret
     deploy:
@@ -108,7 +108,7 @@ services:
 
   fastapi:
     image: fastapi
-    build: ./fastapi/
+    build: ./apps/fastapi/
     secrets:
       - mysecret
     deploy:
@@ -123,7 +123,7 @@ services:
 
   django:
     image: django:latest
-    build: ./django/
+    build: ./apps/django/
     deploy:
         mode: replicated
         replicas: 1
@@ -138,7 +138,7 @@ services:
 
   express:
     image: express
-    build: ./express/
+    build: ./apps/express/
     restart: always
     secrets:
       - mysecret
@@ -148,9 +148,8 @@ services:
     #   - "3001:3001"
 
   nginx:
-    image: nginx:1.23.0-alpine
-    volumes:
-      - ./nginx/config/default.conf:/etc/nginx/conf.d/default.conf
+    image: nginx
+    build: ./apps/nginx/
     restart: always
     secrets:
       - mysecret
@@ -166,11 +165,10 @@ services:
     #   - "81:81"
 
   loadbalancer:
-    image: nginx:1.23.0-alpine
+    image: loadbalancer
+    build: ./apps/loadbalancer/
     ports:
       - "80:80"
-    volumes:
-      - ./loadbalancer/config/default.conf:/etc/nginx/conf.d/default.conf
     secrets:
       - mysecret
     restart: always
@@ -201,6 +199,7 @@ volumes:
 secrets:
   mysecret:
     file: ./secrets.txt
+
   
 networks:
   default:
