@@ -5,22 +5,26 @@ services:
     restart: always
     volumes:
       - mariadb_volume:/var/lib/mysql
+    environment:
+      - MARIADB_ROOT_PASSWORD=/run/secrets/MARIADB_ROOT_PASSWORD
     secrets:
-      - mysecret
+      - my-secret
     deploy:
         mode: replicated
         replicas: 1
         endpoint_mode: vip
-    # ports:
-    #   - "3306:3306"
+    ports:
+      - "3306:3306"
 
   postgres:
     image: postgres:14.4-alpine
     restart: always
+    environment:
+      - POSTGRES_PASSWORD=/run/secrets/POSTGRES_PASSWORD
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     secrets:
-      - mysecret
+      - my-secret
     deploy:
         mode: replicated
         replicas: 1
@@ -31,11 +35,14 @@ services:
   mongo:
     image: mongo:4-focal
     restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=/run/secrets/MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=/run/secrets/MONGO_INITDB_ROOT_PASSWORD
     volumes:
       - mongo_volume:/data/db
       - mongo_volume:/data/configdb
     secrets:
-      - mysecret
+      - my-secret
     deploy:
         mode: replicated
         replicas: 1
@@ -49,7 +56,7 @@ services:
     volumes: 
       - redis_volume:/data
     secrets:
-      - mysecret
+      - my-secret
     deploy:
         mode: replicated
         replicas: 1
@@ -95,7 +102,7 @@ services:
     image: flask
     build: ./apps/flask/
     secrets:
-      - mysecret
+      - my-secret
     deploy:
         mode: replicated
         replicas: 1
@@ -110,7 +117,7 @@ services:
     image: fastapi
     build: ./apps/fastapi/
     secrets:
-      - mysecret
+      - my-secret
     deploy:
         mode: replicated
         replicas: 1
@@ -130,7 +137,7 @@ services:
         endpoint_mode: vip
     restart: always
     secrets:
-      - mysecret
+      - my-secret
     depends_on:
       - mariadb
     # ports:
@@ -141,7 +148,7 @@ services:
     build: ./apps/express/
     restart: always
     secrets:
-      - mysecret
+      - my-secret
     depends_on:
       - mariadb
     # ports:
@@ -152,7 +159,7 @@ services:
     build: ./apps/nginx/
     restart: always
     secrets:
-      - mysecret
+      - my-secret
     deploy:
         mode: replicated
         replicas: 1
@@ -170,7 +177,7 @@ services:
     ports:
       - "80:80"
     secrets:
-      - mysecret
+      - my-secret
     restart: always
     depends_on:
       - flask
@@ -197,9 +204,8 @@ volumes:
     external: true
 
 secrets:
-  mysecret:
+  my-secret:
     file: ./secrets.txt
-
   
 networks:
   default:
