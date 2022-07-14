@@ -1,0 +1,17 @@
+# version: "3.9"
+# services:
+#   mariadb:
+#     image: rabbitmq:3.10-alpine
+#     restart: always
+#     volumes:
+#       - rabbitmq_volume:/var/lib/mysql
+#     environment:
+#       - MARIADB_ROOT_PASSWORD=/run/secrets/MARIADB_ROOT_PASSWORD
+#     secrets:
+#       - my-secret
+#     deploy:
+#         mode: replicated
+#         replicas: 1
+#         endpoint_mode: vip
+#     # ports:
+#     #   - "3306:3306"

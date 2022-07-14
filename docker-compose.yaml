@@ -13,8 +13,8 @@ services:
         mode: replicated
         replicas: 1
         endpoint_mode: vip
-    ports:
-      - "3306:3306"
+    # ports:
+    #   - "3306:3306"
 
   postgres:
     image: postgres:14.4-alpine
@@ -70,8 +70,8 @@ services:
       - "xpack.security.enabled=false"
       - "discovery.type=single-node"
     restart: always
-    ports:
-      - "9200:9200"
+    # ports:
+    #   - "9200:9200"
     #   - "9300:9300"
     volumes:
       - elasticsearch_volume:/usr/share/elasticsearch/data
@@ -80,7 +80,7 @@ services:
     image: kibana:8.3.2
     restart: always
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
     ports:
       - "5601:5601"
     depends_on:
@@ -89,8 +89,8 @@ services:
   ghost:
     image: ghost:5-alpine
     restart: always
-    ports:
-      - "2368:2368"
+    # ports:
+    #   - "2368:2368"
     volumes:
       - ghost_volume:/var/lib/ghost/content
     # deploy:
