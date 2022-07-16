@@ -50,6 +50,21 @@ services:
     # ports:
     #   - "8081:8081"
 
+  neo4j:
+    image: neo4j:4.4-community
+    restart: always
+    volumes:
+      - neo4j_volume:/data
+      - neo4j_volume:/logs
+    secrets:
+      - my-secret
+    # ports:
+    #   - 7474:7474
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
+
   redis:
     image: redis:7-alpine
     restart: always
@@ -63,6 +78,21 @@ services:
         endpoint_mode: vip
     # ports:
     #   - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3.10-alpine
+    restart: always
+    volumes:
+      - rabbitmq_volume:/var/lib/rabbitmq
+    secrets:
+      - my-secret
+    environment:
+      - RABBITMQ_DEFAULT_USER=/run/secrets/RABBITMQ_DEFAULT_USER
+      - RABBITMQ_DEFAULT_PASS=/run/secrets/RABBITMQ_DEFAULT_PASS
+    deploy:
+        mode: replicated
+        replicas: 1
+        endpoint_mode: vip
 
   elasticsearch:
     image: elasticsearch:8.3.2
@@ -85,6 +115,11 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+
+  logstash:
+    image: logstash:8.3.2
+    volumes:
+      - logstash_volume:/usr/share/logstash/pipeline/
 
   ghost:
     image: ghost:5-alpine
@@ -200,7 +235,11 @@ volumes:
     external: true
   elasticsearch_volume:
     external: true
+  logstash_volume:
+    external: true
   ghost_volume:
+    external: true
+  neo4j_volume:
     external: true
 
 secrets:

@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  logstash:
+    image: logstash:8.3.2
+    volumes:
+      - logstash_volume:/usr/share/logstash/pipeline/
+
+volumes:
+  logstash_volume:
+    external: true
+
+networks:
+  default:
+    name: net1
+    external: true

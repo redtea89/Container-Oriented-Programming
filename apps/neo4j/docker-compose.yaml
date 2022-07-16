@@ -1,22 +1,22 @@
 version: "3.9"
 services:
-  rabbitmq:
-    image: rabbitmq:3.10-alpine
+  neo4j:
+    image: neo4j:4.4-community
     restart: always
     volumes:
-      - rabbitmq_volume:/var/lib/rabbitmq
+      - neo4j_volume:/data
+      - neo4j_volume:/logs
     secrets:
       - my-secret
-    environment:
-      - RABBITMQ_DEFAULT_USER=/run/secrets/RABBITMQ_DEFAULT_USER
-      - RABBITMQ_DEFAULT_PASS=/run/secrets/RABBITMQ_DEFAULT_PASS
+    ports:
+      - 7474:7474
     deploy:
         mode: replicated
         replicas: 1
         endpoint_mode: vip
 
 volumes:
-  rabbitmq_volume:
+  neo4j_volume:
     external: true
 
 secrets:
